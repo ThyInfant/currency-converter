@@ -11,6 +11,10 @@ export default function App() {
   const [convertedAmount, setConvertedAmount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const handleSwap = () => {
+    setFromCurrency(toCurrency);
+    setToCurrency(fromCurrency);
+  };
 
   // Fetch exchange rates on load
   useEffect(() => {
@@ -61,13 +65,22 @@ export default function App() {
 
         <AmountInput amount={amount} setAmount={setAmount} />
 
-        <div className="flex gap-4 mt-4">
+        <div className="flex items-end gap-3 mt-4">
           <CurrencySelector
             label="From"
             currency={fromCurrency}
             setCurrency={setFromCurrency}
             rates={rates}
           />
+
+          {/* Swap Button */}
+          <button
+            onClick={handleSwap}
+            className="mb-1 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-3 shadow-md transition-all active:scale-95"
+          >
+            ⇄
+          </button>
+
           <CurrencySelector
             label="To"
             currency={toCurrency}
