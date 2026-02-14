@@ -11,10 +11,14 @@ export default function App() {
   const [convertedAmount, setConvertedAmount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [darkMode, setDarkMode] = useState(false); // <-- Dark mode state
+
   const handleSwap = () => {
     setFromCurrency(toCurrency);
     setToCurrency(fromCurrency);
   };
+
+  const toggleDarkMode = () => setDarkMode(!darkMode); // <-- Toggle function
 
   // Fetch exchange rates on load
   useEffect(() => {
@@ -44,16 +48,43 @@ export default function App() {
     if (!amount || !rates[fromCurrency] || !rates[toCurrency]) return;
 
     const result = (amount / rates[fromCurrency]) * rates[toCurrency];
-
     setConvertedAmount(result.toFixed(2));
   }, [amount, fromCurrency, toCurrency, rates]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-200 flex items-center justify-center px-4">
-      <div className="bg-white/80 backdrop-blur-md shadow-2xl rounded-3xl p-10 w-full max-w-lg border border-white/40">
-        <h1 className="text-4xl font-extrabold text-center mb-8 text-blue-600 tracking-tight">
-          Currency Converter
-        </h1>
+    <div
+      className={`min-h-screen flex items-center justify-center px-4 ${
+        darkMode
+          ? "bg-gray-900 text-white"
+          : "bg-gradient-to-br from-blue-100 via-white to-blue-200"
+      }`}
+    >
+      <div
+        className={`p-10 w-full max-w-lg rounded-3xl shadow-2xl border ${
+          darkMode
+            ? "bg-gray-800 border-gray-700"
+            : "bg-white/80 border-white/40 backdrop-blur-md"
+        }`}
+      >
+        <div className="flex justify-between items-center mb-8">
+          <h1
+            className={`text-4xl font-extrabold tracking-tight ${darkMode ? "text-blue-400" : "text-blue-600"}`}
+          >
+            Currency Converter
+          </h1>
+
+          {/* Dark Mode Toggle */}
+          <button
+            onClick={toggleDarkMode}
+            className={`px-2 py-1 rounded-full font-small transition ${
+              darkMode
+                ? "bg-blue-600 hover:bg-blue-700 text-white"
+                : "bg-gray-200 hover:bg-gray-300 text-gray-800"
+            }`}
+          >
+            {darkMode ? "Light Mode" : "Dark Mode"}
+          </button>
+        </div>
 
         {loading && (
           <p className="text-center text-gray-500 mb-4">
@@ -73,7 +104,6 @@ export default function App() {
             rates={rates}
           />
 
-          {/* Swap Button */}
           <button
             onClick={handleSwap}
             className="mb-1 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-3 shadow-md transition-all active:scale-95"
